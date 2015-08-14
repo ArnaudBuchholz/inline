@@ -64,7 +64,7 @@ function objectForEach(object, callback) {
     }
 }
 
-function notInlined(data) {
+function objectNotInlined(data) {
     var sum = 0;
     objectForEach(data, function (value/*, name, object*/) {
         sum += value;
@@ -72,7 +72,7 @@ function notInlined(data) {
     return sum;
 }
 
-function inlined(data) {
+function objectInlined(data) {
     var property,
         sum = 0,
         value;
@@ -85,9 +85,36 @@ function inlined(data) {
     return sum;
 }
 
-var testData = {a: 1, b: 2, c: 3, d: 4, e: 5};
+var testObject = {a: 1, b: 2, c: 3, d: 4, e: 5};
 
 compare([
-    ["notInlined", notInlined, [testData]],
-    ["inlined", inlined, [testData]]
+    ["objectNotInlined", objectNotInlined, [testObject]],
+    ["objectInlined", objectInlined, [testObject]]
+]);
+
+function arrayNotInlined(data) {
+    var sum = 0;
+    data.forEach(function (value/*, index, array*/) {
+        sum += value;
+    });
+    return sum;
+}
+
+function arrayInlined(data) {
+    var index,
+        length = data.length,
+        sum = 0,
+        value;
+    for (index = 0; index < length; ++index) {
+        value = data[index];
+        sum += value;
+    }
+    return sum;
+}
+
+var testArray = [1, 2, 3, 4, 5];
+
+compare([
+    ["arrayNotInlined", arrayNotInlined, [testArray]],
+    ["arrayInlined", arrayInlined, [testArray]]
 ]);
